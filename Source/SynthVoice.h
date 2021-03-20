@@ -9,10 +9,11 @@
 */
 
 #pragma once
-#include <JuceHeader.h> //Necessary to access Juce methods
-#include "SynthSound.h" //Necessary to access the parameters and methods of SynthSound
-#include "AdsrData.h" // Necessary to access the parameters and methods of SynthSound AdsrData
-#include "OscData.h" // Necessary to access the parameters and methods of SynthSound OscData
+#include <JuceHeader.h>
+#include "SynthSound.h"
+#include "AdsrData.h"
+#include "OscData.h"
+#include "GainData.h"
 
 /*
  This class inherits from SynthesiserVoice from Juce, we do this to be able to tweak our SynthSound objects.
@@ -33,7 +34,7 @@ class SynthVoice : public juce::SynthesiserVoice
     void updateAllDataParameters(const float attack, const float decay, const float sustain, const float release); 
     
     OscData& getOscillator () {return oscData;}; //method to let our processor access directly to the oscillator
-    
+    GainData& getGain () {return gainData;};
     
     private :
    
@@ -41,6 +42,8 @@ class SynthVoice : public juce::SynthesiserVoice
     OscData oscData; // To handle our OSC logic part
 
     juce::dsp::Gain<float> gain; // Gain, will need to be refactored probably
+    
+    GainData gainData; // to handle our Gain
     
     juce::AudioBuffer<float> synthBuffer; // creation of the buffer
 

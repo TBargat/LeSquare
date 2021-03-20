@@ -19,6 +19,8 @@
       <GROUP id="{87A5DF4D-2E2C-F5E1-F66C-1924F8DB6218}" name="DATA">
         <FILE id="fNWV85" name="AdsrData.cpp" compile="1" resource="0" file="Source/AdsrData.cpp"/>
         <FILE id="Bmta39" name="AdsrData.h" compile="0" resource="0" file="Source/AdsrData.h"/>
+        <FILE id="pEsIRA" name="GainData.cpp" compile="1" resource="0" file="Source/GainData.cpp"/>
+        <FILE id="Tzd9Pv" name="GainData.h" compile="0" resource="0" file="Source/GainData.h"/>
         <FILE id="qAsRUC" name="OscData.cpp" compile="1" resource="0" file="Source/OscData.cpp"/>
         <FILE id="DYpaOa" name="OscData.h" compile="0" resource="0" file="Source/OscData.h"/>
       </GROUP>
@@ -26,6 +28,9 @@
         <FILE id="pPDXN1" name="AdsrComponent.cpp" compile="1" resource="0"
               file="Source/AdsrComponent.cpp"/>
         <FILE id="utNvn6" name="AdsrComponent.h" compile="0" resource="0" file="Source/AdsrComponent.h"/>
+        <FILE id="Psaq0e" name="GainComponent.cpp" compile="1" resource="0"
+              file="Source/GainComponent.cpp"/>
+        <FILE id="LOVJbH" name="GainComponent.h" compile="0" resource="0" file="Source/GainComponent.h"/>
         <FILE id="WiRVBZ" name="OscComponent.cpp" compile="1" resource="0"
               file="Source/OscComponent.cpp"/>
         <FILE id="Oionxh" name="OscComponent.h" compile="0" resource="0" file="Source/OscComponent.h"/>

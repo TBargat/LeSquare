@@ -169,9 +169,13 @@ void LeSquareAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
             auto& sustain = *apvts.getRawParameterValue("SUSTAIN");
             auto& release = *apvts.getRawParameterValue("RELEASE");
             
+            //ajout du gain
+            auto& gain = *apvts.getRawParameterValue("GAIN");
             
+            voice->getGain().setGain(gain);
             voice->updateAllDataParameters(attack.load(), decay.load(), sustain.load(), release.load()); // les atomic sont assez lourd, donc on utilise une méthode load pour le notifier ? ça marche sans pas c'est juste plus explicite pour le lecteur du code
-            voice->getOscillator().setOscWaveType(); 
+            voice->getOscillator().setOscWaveType();
+            
         }
     }
     
@@ -216,11 +220,14 @@ juce::AudioProcessorValueTreeState::ParameterLayout LeSquareAudioProcessor::crea
 {
     
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params; // container où l'on mettra tous les params
-    // ici le choix sera plutot sur des "ranges"
+    //ADSR :  ici le choix sera plutot sur des "ranges" pour l'ADSR
     params.push_back (std::make_unique<juce::AudioParameterFloat>("ATTACK", "Attack", juce::NormalisableRange<float> { 0.1f, 1.0f, 0.1f }, 0.1f));
     params.push_back (std::make_unique<juce::AudioParameterFloat>("DECAY", "Decay", juce::NormalisableRange<float> { 0.1f, 1.0f, 0.1f }, 0.1f));
     params.push_back (std::make_unique<juce::AudioParameterFloat>("SUSTAIN", "Sustain", juce::NormalisableRange<float> { 0.1f, 1.0f, 0.1f }, 1.0f));
     params.push_back (std::make_unique<juce::AudioParameterFloat>("RELEASE", "Release", juce::NormalisableRange<float> { 0.1f, 3.0f, 0.1f }, 0.4f));
+    
+    //GAIN/AMPLITUDE : également un range >> attention à mettre le volume assez bas par défaut
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("GAIN", "Gain", juce::NormalisableRange<float> {0.1f, 1.0f, 0.1f }, 0.3f));
     
     // A ne pas oublier à la fin pour retourner notre vecteur/conatiner
     return {params.begin(), params.end()};

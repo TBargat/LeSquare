@@ -10,8 +10,9 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-#include "AdsrComponent.h" //Necessary to access AdsrComponent
-#include "OscComponent.h" //Necessary to access OscComponent
+#include "AdsrComponent.h"
+#include "OscComponent.h"
+#include "GainComponent.h"
 
 //==============================================================================
 /**
@@ -32,6 +33,7 @@ private:
     LeSquareAudioProcessor& audioProcessor;
     // On instancie un AdsrComponent pour avoir accès à nos sliders
     AdsrComponent adsrComponent;
+    GainComponent gainComponent;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LeSquareAudioProcessorEditor)
 };

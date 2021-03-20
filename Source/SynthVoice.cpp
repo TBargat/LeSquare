@@ -52,9 +52,11 @@ void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outpu
     // on peut finalement préparer notre instance de l'oscillateur grâce au ProcessSpec
     oscData.prepareToPlay(spec);
     // On prépare le gain également
-    gain.prepare(spec);
-    gain.setGainLinear(0.3f);
-    
+//    gain.prepare(spec);
+//    gain.setGainLinear(0.3f);
+    gainData.prepareToPlay(spec);
+//    gainData.setGain(0.3f);
+//
     
     isPrepared = true;
 };
@@ -90,7 +92,9 @@ void SynthVoice::renderNextBlock (juce::AudioBuffer< float > &outputBuffer, int 
     oscData.getNextAudioBlock(audioBlock);
     
     // On process également le gain
-    gain.process(juce::dsp::ProcessContextReplacing<float> (audioBlock));
+//    gain.process(juce::dsp::ProcessContextReplacing<float> (audioBlock));
+    // CHANGEMENT PAR GAINDATA
+    gainData.process(juce::dsp::ProcessContextReplacing<float> (audioBlock));
     
     // on applique l'ADSR à notre gain et osc
     adsrData.applyEnvelopeToBuffer(synthBuffer, 0, synthBuffer.getNumSamples()); // rappelle, l'audioBlock est un alias de l'outputBuffer donc on traite bien ce qu'on a fait au dessus. Ce qu'on met dans l'audioBlock va dans l'audioBuffer
