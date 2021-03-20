@@ -9,6 +9,8 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "SynthSound.h" //Necessary to access SynthSound
+#include "SynthVoice.h" //Necessary to access SynthVoice
 
 //==============================================================================
 /**
@@ -54,6 +56,10 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
+    
+    juce::Synthesiser synth; //Creation of our Synthesiser Object
+    
+    
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LeSquareAudioProcessor)
 };

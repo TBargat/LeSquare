@@ -2,10 +2,10 @@
 
 <JUCERPROJECT id="Q8IXdY" name="LeSquare" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
-              pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn">
+              pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
+              pluginFormats="buildAU">
   <MAINGROUP id="Qfaq8Z" name="LeSquare">
     <GROUP id="{A960A462-D3D1-F7CF-0845-715AB08A79C5}" name="Source">
-      <FILE id="co2FhP" name="SynthSound.h" compile="0" resource="0" file="Source/SynthSound.h"/>
       <FILE id="e0tUyH" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="aL04on" name="PluginProcessor.h" compile="0" resource="0"
@@ -15,6 +15,7 @@
       <FILE id="cmxZws" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       <FILE id="Yjw35t" name="SynthVoice.cpp" compile="1" resource="0" file="Source/SynthVoice.cpp"/>
       <FILE id="Kd7NII" name="SynthVoice.h" compile="0" resource="0" file="Source/SynthVoice.h"/>
+      <FILE id="co2FhP" name="SynthSound.h" compile="0" resource="0" file="Source/SynthSound.h"/>
       <GROUP id="{87A5DF4D-2E2C-F5E1-F66C-1924F8DB6218}" name="DATA">
         <FILE id="fNWV85" name="AdsrData.cpp" compile="1" resource="0" file="Source/AdsrData.cpp"/>
         <FILE id="Bmta39" name="AdsrData.h" compile="0" resource="0" file="Source/AdsrData.h"/>

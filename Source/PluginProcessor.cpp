@@ -22,6 +22,8 @@ LeSquareAudioProcessor::LeSquareAudioProcessor()
                        )
 #endif
 {
+    synth.addSound(new SynthSound()); // Creation of the synthsound
+    synth.addVoice(new SynthVoice()); // We create a monophonic synth here >> juste one voice is constructed
 }
 
 LeSquareAudioProcessor::~LeSquareAudioProcessor()
@@ -93,8 +95,17 @@ void LeSquareAudioProcessor::changeProgramName (int index, const juce::String& n
 //==============================================================================
 void LeSquareAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    synth.setCurrentPlaybackSampleRate(sampleRate); // we set de SampleRate to our synth based on the input
+    //on utilise la méthode prepareToPlay de notre classe SynthVoice
+    for (int i = 0; i < synth.getNumVoices(); i ++)
+    {
+        //synth.getVoice(i) // /!\ récupère chaque voix, getVoice retourn un SynthesiserVoice, pas un SynthVoice, on doit donc caster
+        if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i))) // SynthVoice* = un pointer SynthVoice
+        {
+            voice -> prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels()); // sur la ligne du dessus cette méthode ne serait jamais apparue car on manipulait un SynthesiserVoice
+            // rappel : getTotalNumOutputChannels() a été créé exprès aux étapes précédentes
+        }
+    }
 }
 
 void LeSquareAudioProcessor::releaseResources()
@@ -143,19 +154,19 @@ void LeSquareAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
-
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    
+    // loop created to modify our voices - the code is ready to handle polyphony
+    for (int i = 0; i < synth.getNumVoices(); ++i)
     {
-        auto* channelData = buffer.getWritePointer (channel);
-
-        // ..do something to the data...
+        if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
+        {
+            
+            voice->updateAllDataParameters(0.1f, 1.0f, 1.0f, 1.0f);
+            voice->getOscillator().setOscWaveType(); 
+        }
     }
+    
+    synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples()); // we get the voices (just one with the monophonic synth) we played with a renderNextBlock
 }
 
 //==============================================================================
@@ -189,3 +200,5 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new LeSquareAudioProcessor();
 }
+
+

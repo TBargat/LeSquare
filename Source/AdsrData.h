@@ -18,8 +18,11 @@
 class AdsrData : public juce::ADSR
 {
 public:
-
+    //on prototype notre méthode ici :
+    void updateADSR(const float attack, const float decay, const float sustain, const float release);
+    
     
 private:
     
+    juce::ADSR::Parameters adsrParams;
 };
