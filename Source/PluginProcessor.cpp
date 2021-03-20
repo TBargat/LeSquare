@@ -19,7 +19,7 @@ LeSquareAudioProcessor::LeSquareAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ), apvts (*this, nullptr, "Parameters", createParameterLayout())// on initialize apvts, car ça compile pas sinon, cf https://www.youtube.com/watch?v=NE8d91yYBJ8 vers 17 / 18 minutes
 #endif
 {
     synth.addSound(new SynthSound()); // Creation of the synthsound
@@ -158,10 +158,19 @@ void LeSquareAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     // loop created to modify our voices - the code is ready to handle polyphony
     for (int i = 0; i < synth.getNumVoices(); ++i)
     {
-        if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
+        if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i))) // we cast the voices
         {
             
-            voice->updateAllDataParameters(0.1f, 1.0f, 1.0f, 1.0f);
+            
+            //ici on aura différentes choses : OSC controls, ADSR etc... LFO)
+            // on essaye de récupérer les valeurs du Value Tree pour peupler notre méthode
+            auto& attack = *apvts.getRawParameterValue("ATTACK"); // retourne un std::atomic<float>* et nous on veut un const float, donc on rajoute un pointer devant apvts, et on met le & à cause de l'erreur >> c'est une "reference"
+            auto& decay = *apvts.getRawParameterValue("DECAY");
+            auto& sustain = *apvts.getRawParameterValue("SUSTAIN");
+            auto& release = *apvts.getRawParameterValue("RELEASE");
+            
+            
+            voice->updateAllDataParameters(attack.load(), decay.load(), sustain.load(), release.load()); // les atomic sont assez lourd, donc on utilise une méthode load pour le notifier ? ça marche sans pas c'est juste plus explicite pour le lecteur du code
             voice->getOscillator().setOscWaveType(); 
         }
     }
@@ -200,5 +209,23 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new LeSquareAudioProcessor();
 }
+
+// ETAPE 12, on fera un 'Audio Value Tree' un peu plus tard
+// ETAPE 28 on le fait maintenant ! On réfléchit à quels paramètres on veut controler (on regarde les objets privés de SynthVoice et ce qu'on veut changer)
+juce::AudioProcessorValueTreeState::ParameterLayout LeSquareAudioProcessor::createParameterLayout()
+{
+    
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params; // container où l'on mettra tous les params
+    // ici le choix sera plutot sur des "ranges"
+    params.push_back (std::make_unique<juce::AudioParameterFloat>("ATTACK", "Attack", juce::NormalisableRange<float> { 0.1f, 1.0f, 0.1f }, 0.1f));
+    params.push_back (std::make_unique<juce::AudioParameterFloat>("DECAY", "Decay", juce::NormalisableRange<float> { 0.1f, 1.0f, 0.1f }, 0.1f));
+    params.push_back (std::make_unique<juce::AudioParameterFloat>("SUSTAIN", "Sustain", juce::NormalisableRange<float> { 0.1f, 1.0f, 0.1f }, 1.0f));
+    params.push_back (std::make_unique<juce::AudioParameterFloat>("RELEASE", "Release", juce::NormalisableRange<float> { 0.1f, 3.0f, 0.1f }, 0.4f));
+    
+    // A ne pas oublier à la fin pour retourner notre vecteur/conatiner
+    return {params.begin(), params.end()};
+    
+};
+
 
 
