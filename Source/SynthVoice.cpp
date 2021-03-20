@@ -11,8 +11,6 @@
 #include "SynthVoice.h"
 
 
-// ETAPE 5, on implémente les méthodes ajoutées à l'ETAPE 4
-// NB : on ajoute ' SynthVoice:: ' car on est dans la classe SynthVoice
 bool SynthVoice::canPlaySound (juce::SynthesiserSound* sound)
 {
  
