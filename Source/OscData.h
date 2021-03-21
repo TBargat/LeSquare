@@ -26,12 +26,20 @@ public :
     
     //on récupère la méthode setFrequency aussi (qui est dans le startNote de synthVoice)
     void setWaveFrequency (const int midiNoteNumber);
-    
+
+    //pour gérer l'octave
+    void setOctave (const int octave);
+   
     
     
     //on ajoute la méthode ici également :
     void getNextAudioBlock (juce::dsp::AudioBlock<float>& audioBlock);
     
 private :
+    
+    // l'écart créé par l'octave
+    int currentOctave { 0 };
+    //valeur de notre note midi
+    int currentMideNoteFrequency { 0 };
     
 };

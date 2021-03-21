@@ -26,8 +26,20 @@ void OscData::setOscWaveType()
 
 void OscData::setWaveFrequency (const int midiNoteNumber)
 {
-    setFrequency(juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber)); // on l'a renommé après le refactoring OscData, c'est toujours un Oscillator, donc les méthodes fonctionnent); // on l'a renommé après le refactoring OscData, c'est toujours un Oscillator, donc les méthodes fonctionnent
+    //setFrequency(juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber)); // on l'a renommé après le refactoring OscData, c'est toujours un Oscillator, donc les méthodes fonctionnent); // on l'a renommé après le refactoring OscData, c'est toujours un Oscillator, donc les méthodes fonctionnent
+    // pour pouvoir gérer le changement d'octave
+    setFrequency (juce::MidiMessage::getMidiNoteInHertz ((midiNoteNumber + currentOctave)));
+    currentMideNoteFrequency = midiNoteNumber;
 };
+
+void OscData::setOctave (const int octave)
+{
+    currentOctave = octave;
+    setFrequency (juce::MidiMessage::getMidiNoteInHertz ((currentMideNoteFrequency + currentOctave)));
+    
+}
+
+
 
 
 

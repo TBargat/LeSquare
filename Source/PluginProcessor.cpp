@@ -172,9 +172,14 @@ void LeSquareAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
             //ajout du gain
             auto& gain = *apvts.getRawParameterValue("GAIN");
             
+            //Ajout de l'octave
+            auto& octave = *apvts.getRawParameterValue("OCTAVE");
+            
             voice->getGain().setGain(gain);
             voice->updateAllDataParameters(attack.load(), decay.load(), sustain.load(), release.load()); // les atomic sont assez lourd, donc on utilise une méthode load pour le notifier ? ça marche sans pas c'est juste plus explicite pour le lecteur du code
             voice->getOscillator().setOscWaveType();
+            
+            voice->getOscillator().setOctave(octave); //on veut changer le pitch ici en fait
             
         }
     }
@@ -228,6 +233,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout LeSquareAudioProcessor::crea
     
     //GAIN/AMPLITUDE : également un range >> attention à mettre le volume assez bas par défaut
     params.push_back(std::make_unique<juce::AudioParameterFloat>("GAIN", "Gain", juce::NormalisableRange<float> {0.1f, 1.0f, 0.1f }, 0.3f));
+    
+    //CHANGEMENT d'Octave à revoir
+    params.push_back (std::make_unique<juce::AudioParameterInt>("OCTAVE", "Octave", -1, 1, 0));
     
     // A ne pas oublier à la fin pour retourner notre vecteur/conatiner
     return {params.begin(), params.end()};

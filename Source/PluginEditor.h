@@ -34,6 +34,7 @@ private:
     // On instancie un AdsrComponent pour avoir accès à nos sliders
     AdsrComponent adsrComponent;
     GainComponent gainComponent;
+    OscComponent oscComponent;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LeSquareAudioProcessorEditor)
 };
