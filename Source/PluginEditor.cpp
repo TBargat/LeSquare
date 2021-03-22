@@ -15,10 +15,11 @@ LeSquareAudioProcessorEditor::LeSquareAudioProcessorEditor (LeSquareAudioProcess
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (400, 300);
+    setSize (1200, 400);
+    addAndMakeVisible(oscComponent);
     addAndMakeVisible(adsrComponent);
     addAndMakeVisible(gainComponent);
-    addAndMakeVisible(oscComponent);
+    
 }
 
 LeSquareAudioProcessorEditor::~LeSquareAudioProcessorEditor()
@@ -34,7 +35,8 @@ void LeSquareAudioProcessorEditor::paint (juce::Graphics& g)
 
 void LeSquareAudioProcessorEditor::resized()
 {
-    adsrComponent.setBounds(getWidth() / 2, 0, getWidth() / 2, getHeight());
-    gainComponent.setBounds(0, 0, getWidth() / 2, getHeight());
-    oscComponent.setBounds(getWidth() / 4, 0, getWidth() / 2, getHeight());
+    oscComponent.setBounds(0, 0, 200, getHeight());
+    adsrComponent.setBounds(oscComponent.getRight(), 0, 800, getHeight());
+    gainComponent.setBounds(adsrComponent.getRight(), 0, 200, getHeight());
+    
 }

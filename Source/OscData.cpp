@@ -34,7 +34,7 @@ void OscData::setWaveFrequency (const int midiNoteNumber)
 
 void OscData::setOctave (const int octave)
 {
-    currentOctave = octave;
+    currentOctave = octave*12; //on triche un peu, vu qu'on bouge d'un entier avec le slider, on oscille au final entre 1 et -1 demi-tons, donc il suffit simplement de multiplier par 12 pour sauter d'un octave en fait
     setFrequency (juce::MidiMessage::getMidiNoteInHertz ((currentMideNoteFrequency + currentOctave)));
     
 }
