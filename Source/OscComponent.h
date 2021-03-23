@@ -25,9 +25,16 @@ public:
     void resized() override;
 
 private:
+    
     void setOctaveSliderParams(juce::Slider& slider);
+    void setOctaveLabelParams(juce::Label& label, juce::String labelText);
+    void setOctaveLookAndFeel();
+    
     
     juce::Slider octaveSlider;
+    juce::LookAndFeel_V4 octaveLookAndFeel;
+    juce::Label octaveLabel;
+    
     
     using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
     std::unique_ptr<SliderAttachment> octaveAttachment;

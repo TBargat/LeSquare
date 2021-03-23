@@ -25,13 +25,29 @@ AdsrComponent::AdsrComponent(juce::AudioProcessorValueTreeState& apvts)
     sustainAttachment = std::make_unique<SliderAttachment>(apvts, "SUSTAIN", sustainSlider);
     releaseAttachment = std::make_unique<SliderAttachment>(apvts, "RELEASE", releaseSlider);
     
+    
+    
+    
     // on peut donc de façon plus élégante dessiner nos sliders :
     setSliderParams(attackSlider);
     setSliderParams(decaySlider);
     setSliderParams(sustainSlider);
     setSliderParams(releaseSlider);
     // on doit ensuite aller dans le resized pour le mettre à l'écran
-
+    
+    
+    
+    //on gère bloc par bloc le LookAndFeel
+    setAttackLookAndFeel();
+    setDecayLookAndFeel();
+    setSustainLookAndFeel();
+    setReleaseLookAndFeel();
+    
+    setSliderLabelParams(attackLabel, "A");
+    setSliderLabelParams(decayLabel, "D");
+    setSliderLabelParams(sustainLabel, "S");
+    setSliderLabelParams(releaseLabel, "R");
+    
 }
 
 AdsrComponent::~AdsrComponent()
@@ -41,7 +57,7 @@ AdsrComponent::~AdsrComponent()
 void AdsrComponent::paint (juce::Graphics& g)
 {
     // on fout tout en noir et supprime tout pour le moment
-    g.fillAll(juce::Colours::black);
+    g.fillAll(juce::Colour::fromRGB(186, 189, 194));
 }
 
 void AdsrComponent::resized()
@@ -50,24 +66,71 @@ void AdsrComponent::resized()
     //NB : il existe plusieurs méthodes (ici on est en static, on aurait pu utiliser flexbox également par exemple)
     const auto bounds = getLocalBounds().reduced(10); // valeur random
     const auto padding = 10;
-    const auto sliderWidth = bounds.getWidth() /4 - padding; // chiffres basés sur l'expériences
-    const auto sliderHeight= bounds.getHeight();
-    const auto sliderStartX =0; // en haut à gauche, le début de l'UI
-    const auto sliderStartY = 0;
+    const auto sliderWidth = bounds.getWidth() / 4 - padding; // chiffres basés sur l'expériences
+    const auto sliderHeight= bounds.getHeight() - padding;
+    const auto sliderStartX = padding; // en haut à gauche, le début de l'UI
+    const auto sliderStartY = padding;
     
     //on peut utiliser ces valeurs pour nos sliders maintenant
     // NB : les variables au dessus rende le code modifiable et extensible
     
-    attackSlider.setBounds(sliderStartX, sliderStartY, sliderWidth, sliderHeight);
-    decaySlider.setBounds(attackSlider.getRight() + padding, sliderStartY, sliderWidth, sliderHeight); // on le place par rapport au premier
-    sustainSlider.setBounds(decaySlider.getRight() + padding, sliderStartY, sliderWidth, sliderHeight);
-    releaseSlider.setBounds(sustainSlider.getRight() + padding, sliderStartY, sliderWidth, sliderHeight);
+    attackLabel.setBounds(sliderStartX, sliderStartY, sliderWidth, padding * 2);
+    attackSlider.setBounds(sliderStartX, attackLabel.getBottom() + padding, sliderWidth, sliderHeight - attackLabel.getBottom());
+    decayLabel.setBounds(attackSlider.getRight() + padding, attackLabel.getY(), sliderWidth, padding * 2);
+    decaySlider.setBounds(attackSlider.getRight() + padding, attackSlider.getY(), sliderWidth, sliderHeight - attackLabel.getBottom());
+    sustainLabel.setBounds(decaySlider.getRight() + padding, attackLabel.getY(), sliderWidth, padding * 2);
+    sustainSlider.setBounds(decaySlider.getRight() + padding, attackSlider.getY(), sliderWidth, sliderHeight - attackLabel.getBottom());
+    releaseLabel.setBounds(sustainSlider.getRight() + padding, attackLabel.getY(), sliderWidth, padding * 2);
+    releaseSlider.setBounds(sustainSlider.getRight() + padding, attackSlider.getY(), sliderWidth, sliderHeight - attackLabel.getBottom());
+    
+    
+    
+    //on peut utiliser ces valeurs pour nos sliders maintenant
+    // NB : les variables au dessus rende le code modifiable et extensible
+    
 
 }
 // On rajoute ça en changeant la classe parente >> on remplace TapSynthAudioProcessorEditor par AdsrComponent
 void AdsrComponent::setSliderParams(juce::Slider& slider)
 {
+
     slider.setSliderStyle(juce::Slider::SliderStyle::LinearVertical);
-    slider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 50, 25);
+    slider.setTextBoxStyle(juce::Slider::NoTextBox, true, 50, 25);
     addAndMakeVisible(slider);
+}
+
+void AdsrComponent::setSliderLabelParams(juce::Label& label, juce::String labelText)
+{
+    label.setText(labelText, juce::dontSendNotification);
+    label.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(label);
+}
+void AdsrComponent::setAttackLookAndFeel()
+{
+    attackLookAndFeel.setColour (juce::Slider::thumbColourId, juce::Colour::fromRGB(255, 172, 64)); //couleur fadder
+    attackLookAndFeel.setColour (juce::Slider::backgroundColourId , juce::Colour::fromRGB(255, 227, 191)); //couleur Background barre
+    attackLookAndFeel.setColour (juce::Slider::trackColourId, juce::Colour::fromRGB(252, 193, 116)); // couleur barre
+    attackSlider.setLookAndFeel(&attackLookAndFeel);
+}
+void AdsrComponent::setDecayLookAndFeel()
+{
+    decayLookAndFeel.setColour (juce::Slider::thumbColourId, juce::Colour::fromRGB(247, 230, 77)); //couleur fadder
+    decayLookAndFeel.setColour (juce::Slider::backgroundColourId , juce::Colour::fromRGB(255, 248, 181)); //couleur Background barre
+    decayLookAndFeel.setColour (juce::Slider::trackColourId, juce::Colour::fromRGB(255, 242, 125)); // couleur barre
+    decaySlider.setLookAndFeel(&decayLookAndFeel);
+}
+void AdsrComponent::setSustainLookAndFeel()
+{
+    sustainLookAndFeel.setColour (juce::Slider::thumbColourId, juce::Colour::fromRGB(144, 237, 97)); //couleur fadder
+    sustainLookAndFeel.setColour (juce::Slider::backgroundColourId , juce::Colour::fromRGB(206, 240, 189)); //couleur Background barre
+    sustainLookAndFeel.setColour (juce::Slider::trackColourId, juce::Colour::fromRGB(170, 232, 139)); // couleur barre
+    sustainSlider.setLookAndFeel(&sustainLookAndFeel);
+    
+}
+void AdsrComponent::setReleaseLookAndFeel()
+{
+    releaseLookAndFeel.setColour (juce::Slider::thumbColourId, juce::Colour::fromRGB(102, 200, 242)); //couleur fadder
+    releaseLookAndFeel.setColour (juce::Slider::backgroundColourId , juce::Colour::fromRGB(218, 234, 242)); //couleur Background barre
+    releaseLookAndFeel.setColour (juce::Slider::trackColourId, juce::Colour::fromRGB(180, 220, 237)); // couleur barre
+    releaseSlider.setLookAndFeel(&releaseLookAndFeel);
 }

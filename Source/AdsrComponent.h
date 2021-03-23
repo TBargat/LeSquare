@@ -28,12 +28,31 @@ public:
 
 private:
     
+    
+    
+    
     void setSliderParams(juce::Slider& slider);
+    void setSliderLabelParams(juce::Label& label, juce::String labelText);
+    void setAttackLookAndFeel();
+    void setDecayLookAndFeel();
+    void setSustainLookAndFeel();
+    void setReleaseLookAndFeel();
+    
     
     juce::Slider attackSlider;
     juce::Slider decaySlider;
     juce::Slider sustainSlider;
     juce::Slider releaseSlider;
+    
+    juce::LookAndFeel_V4 attackLookAndFeel;
+    juce::LookAndFeel_V4 decayLookAndFeel;
+    juce::LookAndFeel_V4 sustainLookAndFeel;
+    juce::LookAndFeel_V4 releaseLookAndFeel;
+    
+    juce::Label attackLabel;
+    juce::Label decayLabel;
+    juce::Label sustainLabel;
+    juce::Label releaseLabel;
     
     //n ajoute les attachments de l'adsr
     //il faut connecter nos params du Value Tree du PluginProcessor avec nos objets créés ci-dessus >> on utilise des "attachments"

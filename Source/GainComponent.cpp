@@ -17,7 +17,9 @@ GainComponent::GainComponent(juce::AudioProcessorValueTreeState& apvts)
     using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment; // pour refacto clean
     gainAttachment = std::make_unique<SliderAttachment>(apvts, "GAIN", gainSlider);
     setGainSliderParams(gainSlider);
-
+    setGainLookAndFeel();
+    setGainLabelParams(gainLabel, "VoL");
+    
 }
 
 GainComponent::~GainComponent()
@@ -26,29 +28,48 @@ GainComponent::~GainComponent()
 
 void GainComponent::paint (juce::Graphics& g)
 {
-    // on fout tout en noir et supprime tout pour le moment
-    g.fillAll(juce::Colours::black);
+    g.fillAll(juce::Colour::fromRGB(186, 189, 194));
 }
 
 void GainComponent::resized()
 {
-    const auto bounds = getLocalBounds().reduced(10); // valeur random
+    const auto bounds = getLocalBounds().reduced(10);
     const auto padding = 10;
-    const auto sliderWidth = bounds.getWidth() /4 - padding; // chiffres basés sur l'expériences
-    const auto sliderHeight= bounds.getHeight();
-    const auto sliderStartX =0; // en haut à gauche, le début de l'UI
-    const auto sliderStartY = 0;
+    const auto sliderWidth = bounds.getWidth()  - padding;
+    const auto sliderHeight= bounds.getHeight() - padding;
+    const auto sliderStartX = 10;
+    const auto sliderStartY = 10;
     
     //on peut utiliser ces valeurs pour nos sliders maintenant
     // NB : les variables au dessus rende le code modifiable et extensible
     
-    gainSlider.setBounds(sliderStartX, sliderStartY, sliderWidth, sliderHeight);
+    gainLabel.setBounds(sliderStartX, sliderStartY, sliderWidth, padding * 2);
+    gainSlider.setBounds(sliderStartX, gainLabel.getBottom() + padding, sliderWidth, sliderHeight - gainLabel.getBottom());
 
 }
 
 void GainComponent::setGainSliderParams(juce::Slider& slider)
 {
     slider.setSliderStyle(juce::Slider::SliderStyle::LinearVertical);
-    slider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 50, 25);
+    slider.setTextBoxStyle(juce::Slider::NoTextBox, true, 50, 25);
     addAndMakeVisible(slider);
+
+    
+    
 }
+void GainComponent::setGainLabelParams(juce::Label& label, juce::String labelText)
+{
+    label.setText(labelText, juce::dontSendNotification);
+    label.setJustificationType(juce::Justification::centred);
+    addAndMakeVisible(label);
+}
+
+void GainComponent::setGainLookAndFeel()
+{
+    gainLookAndFeel.setColour (juce::Slider::thumbColourId, juce::Colour::fromRGB(247, 117, 92)); //couleur fadder
+    gainLookAndFeel.setColour (juce::Slider::backgroundColourId , juce::Colour::fromRGB(252, 186, 169)); //couleur Background barre
+    gainLookAndFeel.setColour (juce::Slider::trackColourId, juce::Colour::fromRGB(255, 137, 107)); // couleur barre
+    gainSlider.setLookAndFeel(&gainLookAndFeel);
+}
+
+

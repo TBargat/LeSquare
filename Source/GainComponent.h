@@ -26,9 +26,15 @@ public:
 
 private:
     
+    
+    
     void setGainSliderParams(juce::Slider& slider);
+    void setGainLabelParams(juce::Label& label, juce::String labelText);
+    void setGainLookAndFeel();
     
     juce::Slider gainSlider;
+    juce::LookAndFeel_V4 gainLookAndFeel;
+    juce::Label gainLabel;
     
     using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
     std::unique_ptr<SliderAttachment> gainAttachment;
