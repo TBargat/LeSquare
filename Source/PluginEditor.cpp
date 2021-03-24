@@ -13,13 +13,11 @@
 LeSquareAudioProcessorEditor::LeSquareAudioProcessorEditor (LeSquareAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p), adsrComponent (audioProcessor.apvts), gainComponent(audioProcessor.apvts), oscComponent(audioProcessor.apvts)
 {
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
+    
     setSize (1000, 400);
     addAndMakeVisible(oscComponent);
     addAndMakeVisible(adsrComponent);
     addAndMakeVisible(gainComponent);
-    
     
 }
 
@@ -30,14 +28,13 @@ LeSquareAudioProcessorEditor::~LeSquareAudioProcessorEditor()
 //==============================================================================
 void LeSquareAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    //Tout en gris
     g.fillAll(juce::Colour::fromRGB(186, 189, 194));
 }
 
 void LeSquareAudioProcessorEditor::resized()
 {
     const auto bounds = getLocalBounds().reduced(10);
-    const auto oneSixthWidth = bounds.getWidth()/6;
+    const auto oneSixthWidth = bounds.getWidth()/6; // We have 6 components, thus we divide our width by 6
     
     
     oscComponent.setBounds(0, 0, oneSixthWidth, getHeight());

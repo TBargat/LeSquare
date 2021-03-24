@@ -15,38 +15,32 @@
 #include "OscData.h"
 #include "GainData.h"
 
-/*
- This class inherits from SynthesiserVoice from Juce, we do this to be able to tweak our SynthSound objects.
- */
+
 class SynthVoice : public juce::SynthesiserVoice
 {
     
     public :
-    // There are some pure virtual methods to implement here
+    // There are some pure virtual methods we need to implement here (followed by override cause they are inherited)
     bool canPlaySound (juce::SynthesiserSound* sound) override;
     void startNote (int midiNoteNumber, float velocity, juce::SynthesiserSound *sound, int currentPitchWheelPosition) override;
     void stopNote (float velocity, bool allowTailoff) override;
     void controllerMoved (int controllerNumber, int newControllerValue) override;
     void pitchWheelMoved (int newPitchWheelValue) override;
-    void prepareToPlay(double sampleRate, int samplesPerBlock, int outputChannels); // to use our prepare to play
+    void prepareToPlay(double sampleRate, int samplesPerBlock, int outputChannels);
     void renderNextBlock (juce::AudioBuffer< float > &outputBuffer, int startSample, int numSamples) override;
     
-    void updateAllDataParameters(const float attack, const float decay, const float sustain, const float release); 
+    void updateAllDataParameters(const float attack, const float decay, const float sustain, const float release, const float gain, const int octave); 
     
-    OscData& getOscillator () {return oscData;}; //method to let our processor access directly to the oscillator
-    GainData& getGain () {return gainData;};
+    OscData& getOscillator () {return oscData;}; // Method to let our processor access directly to the oscillator to set the wave form
     
     private :
    
-    AdsrData adsrData; // To handle our adsr logic part
-    OscData oscData; // To handle our OSC logic part
+    AdsrData adsrData;
+    OscData oscData;
+    GainData gainData;
 
-    juce::dsp::Gain<float> gain; // Gain, will need to be refactored probably
-    
-    GainData gainData; // to handle our Gain
-    
-    juce::AudioBuffer<float> synthBuffer; // creation of the buffer
+    juce::AudioBuffer<float> synthBuffer;
 
-    bool isPrepared { false }; // boolean used to validated the good processing of the prepare block
+    bool isPrepared { false }; // Boolean used to validate the good processing of the prepare block
     
 };

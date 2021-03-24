@@ -9,7 +9,7 @@
 */
 
 #pragma once
-#include <JuceHeader.h> //Necessary to access Juce methods
+#include <JuceHeader.h> 
 
 
 /*
@@ -18,28 +18,24 @@
 class OscData : public juce::dsp::Oscillator<float>
 {
 public :
-    //on prend tout ce qui est relatif à l'OSCILLATEUR dans le SynthVoice, et on le rappatrie ici pour le gérer de façon plus éloignée
-    void prepareToPlay (juce::dsp::ProcessSpec& spec); // quand on regarde dans le Synthvoic on voit que ça nécessite un ProcessSpec, juste une référence encore une fois
+
+    // This is the lowest level of prepareToPlay management here
+    void prepareToPlay (juce::dsp::ProcessSpec& spec);
     
-    //on va créer une méthode de sélection d'oscillateur
     void setOscWaveType ();
     
-    //on récupère la méthode setFrequency aussi (qui est dans le startNote de synthVoice)
     void setWaveFrequency (const int midiNoteNumber);
 
-    //pour gérer l'octave
     void setOctave (const int octave);
    
     
     
-    //on ajoute la méthode ici également :
+    // This is the lowest level of audioBlock management here
     void getNextAudioBlock (juce::dsp::AudioBlock<float>& audioBlock);
     
 private :
     
-    // l'écart créé par l'octave
     int currentOctave { 0 };
-    //valeur de notre note midi
     int currentMideNoteFrequency { 0 };
     
 };

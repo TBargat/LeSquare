@@ -95,15 +95,13 @@ void LeSquareAudioProcessor::changeProgramName (int index, const juce::String& n
 //==============================================================================
 void LeSquareAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    synth.setCurrentPlaybackSampleRate(sampleRate); // we set de SampleRate to our synth based on the input
-    //on utilise la méthode prepareToPlay de notre classe SynthVoice
+    synth.setCurrentPlaybackSampleRate(sampleRate);
     for (int i = 0; i < synth.getNumVoices(); i ++)
     {
-        //synth.getVoice(i) // /!\ récupère chaque voix, getVoice retourn un SynthesiserVoice, pas un SynthVoice, on doit donc caster
-        if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i))) // SynthVoice* = un pointer SynthVoice
+        // /!\ getVoice returns a SynthesiserVoice, not a SynthVoice. Hence we need to cast it
+        if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
         {
-            voice -> prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels()); // sur la ligne du dessus cette méthode ne serait jamais apparue car on manipulait un SynthesiserVoice
-            // rappel : getTotalNumOutputChannels() a été créé exprès aux étapes précédentes
+            voice -> prepareToPlay(sampleRate, samplesPerBlock, getTotalNumOutputChannels()); 
         }
     }
 }
@@ -155,36 +153,29 @@ void LeSquareAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
     
-    // loop created to modify our voices - the code is ready to handle polyphony
+    // Loop created to modify our voices - the code is ready to handle polyphony
     for (int i = 0; i < synth.getNumVoices(); ++i)
     {
-        if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i))) // we cast the voices
+        if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i))) // We cast the voices
         {
             
             
-            //ici on aura différentes choses : OSC controls, ADSR etc... LFO)
-            // on essaye de récupérer les valeurs du Value Tree pour peupler notre méthode
-            auto& attack = *apvts.getRawParameterValue("ATTACK"); // retourne un std::atomic<float>* et nous on veut un const float, donc on rajoute un pointer devant apvts, et on met le & à cause de l'erreur >> c'est une "reference"
+            // We use our APVTS to get the current parameter values from our GUI components
+            auto& attack = *apvts.getRawParameterValue("ATTACK");
             auto& decay = *apvts.getRawParameterValue("DECAY");
             auto& sustain = *apvts.getRawParameterValue("SUSTAIN");
             auto& release = *apvts.getRawParameterValue("RELEASE");
             
-            //ajout du gain
             auto& gain = *apvts.getRawParameterValue("GAIN");
             
-            //Ajout de l'octave
             auto& octave = *apvts.getRawParameterValue("OCTAVE");
             
-            voice->getGain().setGain(gain);
-            voice->updateAllDataParameters(attack.load(), decay.load(), sustain.load(), release.load()); // les atomic sont assez lourd, donc on utilise une méthode load pour le notifier ? ça marche sans pas c'est juste plus explicite pour le lecteur du code
-            voice->getOscillator().setOscWaveType();
-            
-            voice->getOscillator().setOctave(octave); //on veut changer le pitch ici en fait
-            
+            voice->updateAllDataParameters(attack.load(), decay.load(), sustain.load(), release.load(), gain.load(), octave);
+            voice->getOscillator().setOscWaveType(); // we don't put it in our updateAllDataParameters for now caus it never changes
         }
     }
     
-    synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples()); // we get the voices (just one with the monophonic synth) we played with a renderNextBlock
+    synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 }
 
 //==============================================================================
@@ -219,25 +210,23 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
     return new LeSquareAudioProcessor();
 }
 
-// ETAPE 12, on fera un 'Audio Value Tree' un peu plus tard
-// ETAPE 28 on le fait maintenant ! On réfléchit à quels paramètres on veut controler (on regarde les objets privés de SynthVoice et ce qu'on veut changer)
+// The Value Tree State is enabling us to connect our processor value with the UI
 juce::AudioProcessorValueTreeState::ParameterLayout LeSquareAudioProcessor::createParameterLayout()
 {
     
-    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params; // container où l'on mettra tous les params
-    //ADSR :  ici le choix sera plutot sur des "ranges" pour l'ADSR
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params; // Container to store the parameters
+    
+    
     params.push_back (std::make_unique<juce::AudioParameterFloat>("ATTACK", "Attack", juce::NormalisableRange<float> { 0.1f, 1.0f, 0.1f }, 0.1f));
     params.push_back (std::make_unique<juce::AudioParameterFloat>("DECAY", "Decay", juce::NormalisableRange<float> { 0.1f, 1.0f, 0.1f }, 0.1f));
     params.push_back (std::make_unique<juce::AudioParameterFloat>("SUSTAIN", "Sustain", juce::NormalisableRange<float> { 0.1f, 1.0f, 0.1f }, 1.0f));
     params.push_back (std::make_unique<juce::AudioParameterFloat>("RELEASE", "Release", juce::NormalisableRange<float> { 0.1f, 3.0f, 0.1f }, 0.4f));
     
-    //GAIN/AMPLITUDE : également un range >> attention à mettre le volume assez bas par défaut
     params.push_back(std::make_unique<juce::AudioParameterFloat>("GAIN", "Gain", juce::NormalisableRange<float> {0.1f, 1.0f, 0.1f }, 0.3f));
     
-    //CHANGEMENT d'Octave à revoir
     params.push_back (std::make_unique<juce::AudioParameterInt>("OCTAVE", "Octave", -1, 1, 0));
     
-    // A ne pas oublier à la fin pour retourner notre vecteur/conatiner
+    // To return the vector
     return {params.begin(), params.end()};
     
 };

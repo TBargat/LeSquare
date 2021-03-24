@@ -14,7 +14,7 @@
 //==============================================================================
 GainComponent::GainComponent(juce::AudioProcessorValueTreeState& apvts)
 {
-    using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment; // pour refacto clean
+    using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
     gainAttachment = std::make_unique<SliderAttachment>(apvts, "GAIN", gainSlider);
     setGainSliderParams(gainSlider);
     setGainLookAndFeel();
@@ -33,15 +33,13 @@ void GainComponent::paint (juce::Graphics& g)
 
 void GainComponent::resized()
 {
+    // We create const to easily handle our position rules
     const auto bounds = getLocalBounds().reduced(10);
     const auto padding = 10;
     const auto sliderWidth = bounds.getWidth()  - padding;
     const auto sliderHeight= bounds.getHeight() - padding;
-    const auto sliderStartX = 10;
-    const auto sliderStartY = 10;
-    
-    //on peut utiliser ces valeurs pour nos sliders maintenant
-    // NB : les variables au dessus rende le code modifiable et extensible
+    const auto sliderStartX = padding;
+    const auto sliderStartY = padding;
     
     gainLabel.setBounds(sliderStartX, sliderStartY, sliderWidth, padding * 2);
     gainSlider.setBounds(sliderStartX, gainLabel.getBottom() + padding, sliderWidth, sliderHeight - gainLabel.getBottom());
@@ -53,10 +51,8 @@ void GainComponent::setGainSliderParams(juce::Slider& slider)
     slider.setSliderStyle(juce::Slider::SliderStyle::LinearVertical);
     slider.setTextBoxStyle(juce::Slider::NoTextBox, true, 50, 25);
     addAndMakeVisible(slider);
-
-    
-    
 }
+
 void GainComponent::setGainLabelParams(juce::Label& label, juce::String labelText)
 {
     label.setText(labelText, juce::dontSendNotification);
@@ -66,9 +62,9 @@ void GainComponent::setGainLabelParams(juce::Label& label, juce::String labelTex
 
 void GainComponent::setGainLookAndFeel()
 {
-    gainLookAndFeel.setColour (juce::Slider::thumbColourId, juce::Colour::fromRGB(247, 117, 92)); //couleur fadder
-    gainLookAndFeel.setColour (juce::Slider::backgroundColourId , juce::Colour::fromRGB(252, 186, 169)); //couleur Background barre
-    gainLookAndFeel.setColour (juce::Slider::trackColourId, juce::Colour::fromRGB(255, 137, 107)); // couleur barre
+    gainLookAndFeel.setColour (juce::Slider::thumbColourId, juce::Colour::fromRGB(247, 117, 92));
+    gainLookAndFeel.setColour (juce::Slider::backgroundColourId , juce::Colour::fromRGB(252, 186, 169));
+    gainLookAndFeel.setColour (juce::Slider::trackColourId, juce::Colour::fromRGB(255, 137, 107));
     gainSlider.setLookAndFeel(&gainLookAndFeel);
 }
 

@@ -9,14 +9,13 @@
 */
 
 #pragma once
-#include <JuceHeader.h> //Necessary to access Juce methods
+#include <JuceHeader.h> 
 
-/*
-    This class inherits from SynthesiserSound from Juce, we do this to be able to tweak our SynthSound objects.
- */
+
 class SynthSound : public juce::SynthesiserSound
 {
 public:
-    bool appliesToNote (int midiNoteNumber) override {return true;} // pure virtual methods that we need to implement
+    // Pure virtual methods that we need to implement
+    bool appliesToNote (int midiNoteNumber) override {return true;}
     bool appliesToChannel (int midiChannel) override {return true;}
 };

@@ -31,7 +31,7 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     LeSquareAudioProcessor& audioProcessor;
-    // On instancie un AdsrComponent pour avoir accès à nos sliders
+    // We add our three component objects created in the UI
     AdsrComponent adsrComponent;
     GainComponent gainComponent;
     OscComponent oscComponent;

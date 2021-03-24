@@ -14,7 +14,7 @@ void GainData::prepareToPlay (juce::dsp::ProcessSpec& spec)
 {
     prepare(spec);
 };
-void GainData::setGain(float gain)
+void GainData::setGain(const float gain)
 {
     setGainLinear(gain);
 };

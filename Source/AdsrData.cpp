@@ -9,13 +9,15 @@
 */
 
 #include "AdsrData.h"
-//ce n'est pas un SynthVoice du coup
-void AdsrData::updateADSR(const float attack, const float decay, const float sustain, const float release) //const car on lit la donnée, on n'a pas besoin de la définir, revoir les noms pour éviter la confusion peut-être
+
+
+void AdsrData::updateADSR(const float attack, const float decay, const float sustain, const float release)
+// We use const cause we just need to read the data, no need to define it
 {
-    adsrParams.attack = attack; // rappel : c'est un objet de type ADSR, il a donc les attributs attack, decay etc...
-    adsrParams.decay = decay;
-    adsrParams.sustain = sustain;
-    adsrParams.release = release;
-    // On ajoute ensuite c'est params à notre ADSR comme suit :
-    setParameters(adsrParams);
+    adsrParameters.attack = attack; 
+    adsrParameters.decay = decay;
+    adsrParameters.sustain = sustain;
+    adsrParameters.release = release;
+    // We can now set the parameters with this ADSR class' method
+    setParameters(adsrParameters);
 };

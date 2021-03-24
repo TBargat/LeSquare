@@ -9,7 +9,7 @@
 */
 
 #pragma once
-#include <JuceHeader.h> //Necessary to access Juce methods
+#include <JuceHeader.h>
 
 /*
  This class will help us to handle all the 'maths' behind our voice amp enveloppe (ADSR), it inherits from juce::ADSR class 
@@ -18,11 +18,10 @@
 class AdsrData : public juce::ADSR
 {
 public:
-    //on prototype notre méthode ici :
+   
     void updateADSR(const float attack, const float decay, const float sustain, const float release);
-    
     
 private:
     
-    juce::ADSR::Parameters adsrParams;
+    juce::ADSR::Parameters adsrParameters;
 };

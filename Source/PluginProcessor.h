@@ -9,8 +9,8 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "SynthSound.h" //Necessary to access SynthSound
-#include "SynthVoice.h" //Necessary to access SynthVoice
+#include "SynthSound.h"
+#include "SynthVoice.h"
 
 //==============================================================================
 /**
@@ -55,14 +55,13 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-    // on met l'APVTS ici, mais c'est mieux de le mettre en privé en général >> il faut passer par une autre méthode pour l'appeler quand c'est privé ?
     juce::AudioProcessorValueTreeState apvts;
     
 private:
     
-    juce::Synthesiser synth; //Creation of our Synthesiser Object
+    juce::Synthesiser synth;
     
-    juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout(); // we create a value tree to communicate the parameters with our UI
+    juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout(); // We create a ParameterLayout for a value tree to communicate the parameters with our UI
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LeSquareAudioProcessor)
 };
